@@ -1,0 +1,1320 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso de Razonamiento Algorítmico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+            color: #333;
+        }
+
+        /* Menú lateral */
+        .sidebar {
+            width: 280px;
+            background: #FCAE1E;
+            color: white;
+            padding: 20px 0;
+            overflow-y: auto;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            padding: 0 10px;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            display: block;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #28A745;
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-left: 4px solid #28A745;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2, h3, h4 {
+            color: #73C2FB;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #FCAE1E;
+            font-size: 2.2rem;
+        }
+
+        h2 {
+            color: #FD7E14;
+            font-size: 1.8rem;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #73C2FB;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Quiz styles */
+        .quiz-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #28A745;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        .option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+        }
+
+        .option.selected {
+            background: #73C2FB;
+            color: white;
+            border-color: #73C2FB;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28A745;
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 20px;
+            background: #d4edda;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Juego de memoria */
+        .memory-game {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .card {
+            height: 100px;
+            background: #73C2FB;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .card.flipped {
+            background: #FCAE1E;
+        }
+
+        .card.matched {
+            background: #28A745;
+            cursor: default;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            position: fixed;
+            bottom: 0;
+            width: calc(100% - 280px);
+            margin-left: 280px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                margin-bottom: 20px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .footer {
+                width: 100%;
+                margin-left: 0;
+            }
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>🚀 Razonamiento Algorítmico</h2>
+        <a class="menu-item" data-target="tema1">Tema 1: Fundamentos 🧠</a>
+        <a class="menu-item" data-target="tema2">Tema 2: Análisis del Problema 📊</a>
+        <a class="menu-item" data-target="tema3">Tema 3: Diseño del Algoritmo ⚙️</a>
+        <a class="menu-item" data-target="tema4">Tema 4: Representaciones 📝</a>
+        <a class="menu-item" data-target="tema5">Tema 5: Verificación ✅</a>
+        <a class="menu-item" data-target="examen">Examen Final 📚</a>
+        <a class="menu-item" data-target="memoria">Juego de Memoria 🧠</a>
+    </div>
+
+    <div class="main-content">
+        <!-- Tema 1 -->
+        <div id="tema1" class="content-section">
+            <h1>Unidad No. 4: Introducción al Razonamiento Algorítmico</h1>
+            <h2>Tema 1. Fundamentos del Razonamiento Algorítmico</h2>
+            
+			<!-- Placeholder para imagen -->
+            <img src="imagenes/Fundamentos-1.png" alt="Imagen ilustrativa del ciclo de vida del algoritmo">
+            <p><em>Figura 1: Fundamentos del razonamiento algoritmo.</em></p>
+			
+            <h3>Introducción al Módulo 🚀</h3>
+            <p>El razonamiento algorítmico, también conocido como pensamiento algorítmico, es una habilidad cognitiva fundamental para la resolución sistemática de problemas, no solo en el campo de la informática, sino en innumerables facetas de la vida cotidiana. Se define como la capacidad de abstraer y modelar un problema, aplicar deducciones lógicas y sintetizar una solución que culmina en la formulación de un algoritmo correcto. Este curso está diseñado para desarrollar el ciclo de vida completo de un algoritmo, desde la concepción del problema hasta su verificación final. A lo largo de estos módulos, exploraremos el pensamiento algorítmico como un componente esencial del pensamiento computacional, un conjunto más amplio de competencias que abarca la depuración, la eficiencia y la comprensión de las limitaciones tecnológicas.</p>
+
+            <h3>Habilidades Cognitivas Clave 🧠</h3>
+            <p>Para transformar un problema del mundo real, a menudo ambiguo y desestructurado, en una solución algorítmica determinista, es necesario aplicar dos habilidades cognitivas clave que simplifican la complejidad.</p>
+            
+            <ul>
+                <li><strong>Abstracción</strong>: Es la capacidad de destilar un problema a su esencia, eliminando selectivamente los detalles que son irrelevantes o innecesarios para la solución computacional. Al centrarnos en los aspectos fundamentales, podemos elevar nuestra perspectiva y simplificar el proceso de resolución. Una abstracción correcta es el puente crítico que conecta el problema del mundo real con su especificación formal; un error en esta etapa compromete la viabilidad de todo el algoritmo.</li>
+                <li><strong>Descomposición</strong>: También conocida como modularización, es la estrategia de fraccionar un problema complejo en una serie de subproblemas más pequeños y, por lo tanto, más manejables. Esta división sistemática facilita enormemente el desarrollo, ya que permite abordar cada componente de forma aislada, controlando así la complejidad general de la solución.</li>
+            </ul>
+
+            <h3>El Ciclo de Vida de la Resolución de Problemas 🔄</h3>
+            <p>El proceso completo para resolver un problema mediante una computadora sigue una metodología estructurada que guía el desarrollo desde la idea inicial hasta la implementación final. Este ciclo consta de las siguientes siete etapas:</p>
+            
+            <ol>
+                <li><strong>Definición del problema</strong>: Comprender y delimitar por completo el problema, estableciendo claramente qué se desea que la computadora realice.</li>
+                <li><strong>Análisis de la solución</strong>: Establecer los requisitos, datos de entrada, procesos necesarios y resultados esperados para determinar si se cuenta con los elementos suficientes para resolverlo.</li>
+                <li><strong>Diseño de la solución</strong>: Crear el algoritmo, ya sea mediante pseudocódigo o diagramas de flujo, que proporcione un método explícito y ordenado para la solución.</li>
+                <li><strong>Codificación</strong>: Traducir el algoritmo diseñado a un lenguaje de programación específico, escribiendo las instrucciones en un código que la computadora pueda ejecutar.</li>
+                <li><strong>Prueba y depuración</strong>: Ejecutar el programa para identificar y eliminar sistemáticamente los errores lógicos o de sintaxis hasta que funcione correctamente.</li>
+                <li><strong>Documentación</strong>: Crear una guía escrita que describa el problema, el diseño del algoritmo, el código y las instrucciones para el usuario final, facilitando su uso y futuro mantenimiento.</li>
+                <li><strong>Mantenimiento</strong>: Se ejecuta luego de que el programa haya terminado, cuando se detecta que es necesario hacer un cambio o ajuste para que siga trabajando de manera correcta.</li>
+            </ol>
+
+            <p>A continuación, nos adentraremos en el primer y más crítico paso de este ciclo: el análisis detallado del problema.</p>
+
+            <!-- Placeholder para imagen -->
+            <img src="imagenes/Fundamentos-2.png" alt="Imagen ilustrativa del ciclo de vida del algoritmo">
+            <p><em>Figura 1: Representación esquemática del ciclo de vida de la resolución de problemas.</em></p>
+
+            <!-- Quiz Tema 1 -->
+            <div class="quiz-container">
+                <h3>🧠 Quiz de Repaso - Tema 1</h3>
+                <div class="question">
+                    <p><strong>1. ¿Qué es el razonamiento algorítmico?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 0)">
+                            <input type="radio" name="q0" value="a"> a) La capacidad de abstraer y modelar un problema, aplicar deducciones lógicas y sintetizar una solución que culmina en la formulación de un algoritmo correcto
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 0)">
+                            <input type="radio" name="q0" value="b"> b) La habilidad de escribir código rápidamente
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 0)">
+                            <input type="radio" name="q0" value="c"> c) La capacidad de resolver problemas matemáticos complejos
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 0)">
+                            <input type="radio" name="q0" value="d"> d) La habilidad de usar computadoras eficientemente
+                        </label>
+                    </div>
+                    <div id="feedback0" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>2. ¿Cuáles son las dos habilidades cognitivas clave del razonamiento algorítmico?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 1)">
+                            <input type="radio" name="q1" value="a"> a) Abstracción y descomposición
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 1)">
+                            <input type="radio" name="q1" value="b"> b) Memoria y lógica
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 1)">
+                            <input type="radio" name="q1" value="c"> c) Creatividad y análisis
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 1)">
+                            <input type="radio" name="q1" value="d"> d) Velocidad y precisión
+                        </label>
+                    </div>
+                    <div id="feedback1" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>3. ¿Cuántas etapas tiene el ciclo de vida de la resolución de problemas?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 2)">
+                            <input type="radio" name="q2" value="a"> a) 7
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 2)">
+                            <input type="radio" name="q2" value="b"> b) 5
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 2)">
+                            <input type="radio" name="q2" value="c"> c) 6
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 2)">
+                            <input type="radio" name="q2" value="d"> d) 8
+                        </label>
+                    </div>
+                    <div id="feedback2" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tema 2 -->
+        <div id="tema2" class="content-section">
+            <h1>Unidad No. 4: Introducción al Razonamiento Algorítmico</h1>
+            <h2>Tema 2. Análisis del Problema: La Especificación Formal</h2>
+            
+            <h3>Introducción al Módulo 📊</h3>
+            <p>La fase de análisis es la más crítica en la metodología de resolución de problemas. Su objetivo es transformar una necesidad, a menudo expresada de manera ambigua, en una especificación formal y precisa que servirá como una guía inalterable durante todo el proceso de diseño y construcción. Un análisis riguroso es la base sobre la que se construye una solución robusta y correcta.</p>
+
+            <h3>La Estructura Fundamental IPO 📥📤</h3>
+            <p>Aplicando las habilidades de abstracción y descomposición que vimos anteriormente, el primer paso para formalizar cualquier problema es destilarlo a su estructura más esencial: Entrada, Proceso y Salida (IPO). Definir con claridad estos tres componentes es el primer paso para establecer los límites y el alcance de la solución.</p>
+            
+            <ul>
+                <li><strong>Entradas (Inputs)</strong>: Son los datos iniciales que el algoritmo necesita recibir para poder comenzar su ejecución. Constituyen los insumos necesarios para resolver el problema.</li>
+                <li><strong>Proceso (Process)</strong>: Es la secuencia ordenada de instrucciones, cálculos y transformaciones lógicas que se aplican a las entradas para convertirlas en el resultado deseado.</li>
+                <li><strong>Salidas (Outputs)</strong>: Son los resultados que el algoritmo genera una vez que ha completado su proceso. Representan la solución al problema planteado.</li>
+            </ul>
+
+            <!-- Placeholder para imagen -->
+            <img src="imagenes/Fundamentos-3.png" alt="Diagrama IPO">
+            <p><em>Figura 2: Diagrama que ilustra la estructura IPO (Entrada-Proceso-Salida).</em></p>
+
+            <h3>Definición de Restricciones y Dominio 📏</h3>
+            <p>La formalización de un problema requiere expresar sus componentes en términos de variables, sus posibles valores (dominios) y las limitaciones operativas (restricciones). Estos elementos definen con precisión el espacio de soluciones viables. Las restricciones no son meros obstáculos, sino reglas que delimitan lo que constituye una solución válida. Pueden ser de naturaleza lógica (internas al problema) o externas (impuestas por el entorno, como limitaciones de tiempo de ejecución, memoria, presupuesto o normativas legales). Un algoritmo que encuentra una solución teóricamente correcta pero viola una restricción operativa es, en la práctica, incorrecto para su contexto.</p>
+
+            <h3>El Contrato Lógico del Algoritmo 📋</h3>
+            <p>Para asegurar la fiabilidad y predictibilidad de un algoritmo, se utiliza un "contrato lógico" compuesto por precondiciones y postcondiciones. Este 'contrato' establece un acuerdo vinculante: si el código que llama al algoritmo (el cliente) cumple con las precondiciones (las obligaciones del cliente), el algoritmo garantiza que al finalizar su ejecución, las postcondiciones (las promesas del algoritmo) serán verdaderas. Romper este contrato conduce a un comportamiento indefinido y a errores.</p>
+            
+            <ul>
+                <li><strong>Precondiciones</strong>: Son las condiciones que deben ser verdaderas en el estado del sistema antes de que se ejecute el algoritmo. Si estas condiciones no se cumplen, el algoritmo no puede garantizar un resultado correcto. Por ejemplo, para un algoritmo que calcula la media de una lista, una precondición fundamental es que la lista no esté vacía.</li>
+                <li><strong>Postcondiciones</strong>: Son las condiciones que se garantizan como verdaderas después de que el algoritmo concluye su ejecución. Describen el estado final exitoso del sistema. Por ejemplo, para un algoritmo de ordenamiento, la postcondición es que la secuencia de elementos final esté ordenada de manera ascendente.</li>
+            </ul>
+
+            <p>Una vez que el "qué" del problema está formalmente definido a través del análisis, el siguiente paso es diseñar el "cómo" se resolverá.</p>
+
+            <!-- Quiz Tema 2 -->
+            <div class="quiz-container">
+                <h3>📊 Quiz de Repaso - Tema 2</h3>
+                <div class="question">
+                    <p><strong>1. ¿Qué significa IPO en el análisis del problema?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 0)">
+                            <input type="radio" name="q3" value="a"> a) Entrada, Proceso y Salida
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 0)">
+                            <input type="radio" name="q3" value="b"> b) Ingreso, Procedimiento y Obtención
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 0)">
+                            <input type="radio" name="q3" value="c"> c) Inicial, Procesamiento y Final
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 0)">
+                            <input type="radio" name="q3" value="d"> d) Información, Procesamiento y Organización
+                        </label>
+                    </div>
+                    <div id="feedback3" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>2. ¿Qué son las precondiciones?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 1)">
+                            <input type="radio" name="q4" value="a"> a) Condiciones que deben ser verdaderas antes de ejecutar el algoritmo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 1)">
+                            <input type="radio" name="q4" value="b"> b) Condiciones que deben ser verdaderas después de ejecutar el algoritmo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 1)">
+                            <input type="radio" name="q4" value="c"> c) Condiciones que pueden ser verdaderas o falsas
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 1)">
+                            <input type="radio" name="q4" value="d"> d) Condiciones que se verifican durante la ejecución
+                        </label>
+                    </div>
+                    <div id="feedback4" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>3. ¿Cuál es la estructura fundamental en el análisis del problema?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 2)">
+                            <input type="radio" name="q5" value="a"> a) Entrada, Proceso y Salida (IPO)
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 2)">
+                            <input type="radio" name="q5" value="b"> b) Análisis, Diseño y Codificación
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 2)">
+                            <input type="radio" name="q5" value="c"> c) Variables, Datos y Resultados
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 2)">
+                            <input type="radio" name="q5" value="d"> d) Problema, Solución y Verificación
+                        </label>
+                    </div>
+                    <div id="feedback5" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tema 3 -->
+        <div id="tema3" class="content-section">
+            <h1>Unidad No. 4: Introducción al Razonamiento Algorítmico</h1>
+            <h2>Tema 3. Diseño y Construcción del Algoritmo</h2>
+            
+            <h3>Introducción al Módulo ⚙️</h3>
+            <p>La fase de diseño es la traducción metódica de la especificación formal (el qué) a un procedimiento estructurado y secuencial (el cómo). En esta etapa se toman decisiones arquitectónicas cruciales que no solo definen la lógica de la solución, sino que también impactan directamente la eficiencia, legibilidad y mantenibilidad del algoritmo final. Un diseño bien estructurado puede ser la diferencia entre una solución elegante y escalable y una que es costosa e inviable.</p>
+
+            <h3>Metodologías de Diseño Estructurado 🏗️</h3>
+            <p>Para gestionar la complejidad inherente a la resolución de problemas, se emplean metodologías de diseño que promueven la claridad y la organización.</p>
+            
+            <ul>
+                <li><strong>Diseño Descendente (Top-Down) y Refinamiento por Pasos</strong>: Esta es una estrategia fundamental en la ingeniería de software. Consiste en abordar el problema desde su totalidad, conceptualmente en el nivel más alto y abstracto, para luego descomponerlo sucesivamente en partes más pequeñas y manejables. Este proceso, también conocido como "refinamiento por etapas", continúa hasta que cada subproblema es lo suficientemente simple como para ser codificado directamente. Esta metodología se complementa con la prueba iterativa, donde los componentes más pequeños se verifican de forma aislada antes de integrarlos en la solución completa.</li>
+                <li><strong>Diseño Modular</strong>: Este principio consiste en dividir la solución en módulos o subprogramas independientes, cada uno con una función bien definida y una interfaz de comunicación clara. Un buen diseño modular facilita la reutilización de código en otros proyectos, simplifica drásticamente el mantenimiento y la actualización del software, y permite una colaboración más eficiente entre diferentes equipos de desarrollo.</li>
+            </ul>
+			
+            <!-- Placeholder para imagen -->
+            <img src="imagenes/fundamentos-metodos.png" alt="Estructuras de control">
+            <p><em>Figura 3: Representación visual de las metodologias de diseño.</em></p>
+			
+            <h3>Las Estructuras de Control Fundamentales 🔄</h3>
+            <p>Todo algoritmo, sin importar su complejidad, se puede construir a partir de la combinación de tres estructuras de control lógicas fundamentales. Estas son los pilares de la programación estructurada.</p>
+            
+            <ul>
+                <li><strong>Secuencia</strong>: Es la ejecución lineal de instrucciones, una tras otra, en el orden en que están escritas. El estado final de una instrucción se convierte en el estado inicial de la siguiente.</li>
+                <li><strong>Selección (Condicionales)</strong>: Permite elegir entre diferentes caminos de ejecución basándose en la evaluación de una condición lógica. Las estructuras SI-ENTONCES-SINO son el ejemplo más común de esta estructura, permitiendo que el algoritmo tome decisiones.</li>
+                <li><strong>Iteración (Ciclos)</strong>: Permite la repetición de un bloque de instrucciones mientras se cumpla una determinada condición. Estructuras como MIENTRAS son esenciales para procesar colecciones de datos o ejecutar tareas repetitivas. La presencia y, especialmente, el anidamiento de ciclos son los factores principales que determinan la complejidad y el tiempo de ejecución de un algoritmo. El diseño de estos ciclos es lo que diferencia una solución eficiente de una inviable, un concepto que cuantificaremos formalmente con la Notación Big O en la sección de verificación.</li>
+            </ul>
+
+            <!-- Placeholder para imagen -->
+            <img src="imagenes/estructuras-control.jpeg" alt="Estructuras de control">
+            <p><em>Figura 3.1: Representación visual de las estructuras de control fundamentales.</em></p>
+
+            <p>Una vez que la lógica está diseñada, es crucial representarla de una manera que sea formal, comprensible y que facilite su posterior implementación.</p>
+
+            <!-- Quiz Tema 3 -->
+            <div class="quiz-container">
+                <h3>⚙️ Quiz de Repaso - Tema 3</h3>
+                <div class="question">
+                    <p><strong>1. ¿Qué estrategia implica abordar el problema desde el nivel más alto y abstracto para luego descomponerlo?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 0)">
+                            <input type="radio" name="q6" value="a"> a) Diseño Descendente (Top-Down)
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 0)">
+                            <input type="radio" name="q6" value="b"> b) Diseño Ascendente (Bottom-Up)
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 0)">
+                            <input type="radio" name="q6" value="c"> c) Diseño Modular
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 0)">
+                            <input type="radio" name="q6" value="d"> d) Diseño Iterativo
+                        </label>
+                    </div>
+                    <div id="feedback6" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>2. ¿Cuáles son las tres estructuras de control fundamentales?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 1)">
+                            <input type="radio" name="q7" value="a"> a) Secuencia, Selección e Iteración
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 1)">
+                            <input type="radio" name="q7" value="b"> b) Entrada, Proceso y Salida
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 1)">
+                            <input type="radio" name="q7" value="c"> c) Variables, Constantes y Funciones
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 1)">
+                            <input type="radio" name="q7" value="d"> d) Análisis, Diseño y Codificación
+                        </label>
+                    </div>
+                    <div id="feedback7" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>3. ¿Qué estructura permite la repetición de instrucciones?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 2)">
+                            <input type="radio" name="q8" value="a"> a) Iteración
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 2)">
+                            <input type="radio" name="q8" value="b"> b) Secuencia
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 2)">
+                            <input type="radio" name="q8" value="c"> c) Selección
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 2)">
+                            <input type="radio" name="q8" value="d"> d) Asignación
+                        </label>
+                    </div>
+                    <div id="feedback8" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tema 4 -->
+        <div id="tema4" class="content-section">
+            <h1>Unidad No. 4: Introducción al Razonamiento Algorítmico</h1>
+            <h2>Tema 4. Tres Visiones de la Misma Solución del Problema</h2>
+            
+            <h3>Introducción al Módulo 📝</h3>
+            <p>Una vez que un algoritmo ha sido diseñado lógicamente, debe ser representado de una forma que sea clara y no ambigua. La representación es clave para la comunicación, la verificación y la eventual codificación. Existen tres formas canónicas para documentar la misma solución, cada una con un nivel de formalidad y un propósito distintos, lo que las hace adecuadas para diferentes audiencias y etapas del desarrollo.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Representación</th>
+                        <th>Descripción Clave</th>
+                        <th>Ventajas/Desventajas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Lenguaje Natural</strong></td>
+                        <td>Utiliza un lenguaje cotidiano, como el español, para describir los pasos del algoritmo de forma narrativa.</td>
+                        <td>
+                            <strong>Ventaja:</strong> Alta accesibilidad para personas no técnicas.<br>
+                            <strong>Desventaja:</strong> Alta propensión a la ambigüedad, interpretaciones múltiples y omisiones lógicas, haciéndolo inadecuado para una implementación rigurosa.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pseudocódigo</strong></td>
+                        <td>Notación textual semi-formal que combina lenguaje natural con estructuras de control de lenguajes de programación (SI-ENTONCES, REPETIR, etc.).</td>
+                        <td>
+                            <strong>Ventaja:</strong> Logra un equilibrio ideal entre legibilidad humana y rigor estructural. Es independiente del lenguaje, sirviendo como un plano directo y sin ambigüedades para la codificación.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diagramas de Flujo</strong></td>
+                        <td>Representación gráfica que utiliza símbolos geométricos estandarizados para visualizar el flujo de control, las operaciones y los puntos de decisión.</td>
+                        <td>
+                            <strong>Ventaja:</strong> Muestra la lógica y la secuencia de manera intuitiva y visual, facilitando la comprensión rápida del proceso.<br>
+                            <strong>Desventaja:</strong> Puede volverse impráctico y difícil de mantener para algoritmos complejos o de gran tamaño.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Caso Práctico: Suma de dos números ➕</h3>
+            <p>Para ilustrar cómo estas tres visiones representan la misma lógica, consideremos un algoritmo simple para sumar dos números enteros.</p>
+
+            <h4>Visión 1 - Lenguaje Natural 🗣️</h4>
+            <p>El proceso se describe narrativamente:</p>
+            <ol>
+                <li>Se inicia el proceso.</li>
+                <li>Se solicita y lee el primer número entero.</li>
+                <li>Se solicita y lee el segundo número entero.</li>
+                <li>Se suman los dos números y el resultado se almacena.</li>
+                <li>Se muestra el resultado de la suma.</li>
+                <li>Se finaliza el proceso.</li>
+            </ol>
+
+            <h4>Visión 2 - Pseudocódigo 📄</h4>
+            <p>La misma lógica se expresa de forma más estructurada:</p>
+            <pre>
+Inicio
+Leer n1
+Leer n2
+suma ← n1 + n2
+Escribir suma
+Fin
+            </pre>
+
+            <h4>Visión 3 - Diagrama de Flujo 📊</h4>
+            <p>La representación gráfica de este algoritmo se describiría de la siguiente manera:</p>
+            <ul>
+                <li>Comienza con un símbolo de Inicio/Fin (una forma ovalada) etiquetado como "Inicio".</li>
+                <li>Una flecha de flujo apunta hacia un símbolo de Entrada/Salida (un paralelogramo) que indica la lectura del primer dato, "n1".</li>
+                <li>Otra flecha conecta a un segundo símbolo de Entrada/Salida para el dato "n2".</li>
+                <li>La siguiente flecha apunta a un símbolo de Proceso (un rectángulo) que contiene la operación aritmética: suma ← n1 + n2.</li>
+                <li>A continuación, una flecha lleva a un símbolo de Entrada/Salida (un paralelogramo) para mostrar el resultado "suma".</li>
+                <li>Finalmente, una flecha apunta a un símbolo de Inicio/Fin etiquetado como "Fin".</li>
+            </ul>
+
+            <!-- Placeholder para imagen -->
+            <img src="imagenes/diagramaDeFlujo.png" alt="Diagrama de flujo">
+            <p><em>Figura 4: Diagrama de flujo para el algoritmo de suma de dos números.</em></p>
+
+            <p>Crear una solución no es suficiente; es imperativo asegurarse de que funcione correctamente bajo todas las condiciones y de manera eficiente, lo que nos lleva directamente al proceso de verificación.</p>
+
+            <!-- Quiz Tema 4 -->
+            <div class="quiz-container">
+                <h3>📝 Quiz de Repaso - Tema 4</h3>
+                <div class="question">
+                    <p><strong>1. ¿Cuáles son las tres formas canónicas de representar un algoritmo?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 0)">
+                            <input type="radio" name="q9" value="a"> a) Lenguaje Natural, Pseudocódigo y Diagramas de Flujo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 0)">
+                            <input type="radio" name="q9" value="b"> b) Análisis, Diseño y Codificación
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 0)">
+                            <input type="radio" name="q9" value="c"> c) Variables, Constantes y Funciones
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 0)">
+                            <input type="radio" name="q9" value="d"> d) Secuencia, Selección e Iteración
+                        </label>
+                    </div>
+                    <div id="feedback9" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>2. ¿Cuál es la ventaja principal del pseudocódigo?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 1)">
+                            <input type="radio" name="q10" value="a"> a) Logra un equilibrio entre legibilidad humana y rigor estructural
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 1)">
+                            <input type="radio" name="q10" value="b"> b) Es más visual que los diagramas de flujo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 1)">
+                            <input type="radio" name="q10" value="c"> c) Es más simple que el lenguaje natural
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 1)">
+                            <input type="radio" name="q10" value="d"> d) No requiere conocimientos de programación
+                        </label>
+                    </div>
+                    <div id="feedback10" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>3. ¿Qué representa el símbolo ovalado en un diagrama de flujo?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 2)">
+                            <input type="radio" name="q11" value="a"> a) Inicio/Fin del proceso
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 2)">
+                            <input type="radio" name="q11" value="b"> b) Proceso o cálculo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 2)">
+                            <input type="radio" name="q11" value="c"> c) Entrada/Salida de datos
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 2)">
+                            <input type="radio" name="q11" value="d"> d) Decisión o condición
+                        </label>
+                    </div>
+                    <div id="feedback11" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tema 5 -->
+        <div id="tema5" class="content-section">
+            <h1>Unidad No. 4: Introducción al Razonamiento Algorítmico</h1>
+            <h2>Tema 5. Verificación del Algoritmo</h2>
+            
+            <h3>Introducción al tema ✅</h3>
+            <p>La verificación es la etapa esencial que valida que una solución algorítmica es correcta (cumple su objetivo y produce el resultado esperado) y eficiente (lo hace de manera óptima, utilizando la menor cantidad de recursos posible). Un algoritmo que no ha sido verificado es, en esencia, poco fiable, ya que su comportamiento en diferentes escenarios es desconocido.</p>
+
+            <h3>Verificación de la Correctitud Lógica 🎯</h3>
+            <p>La validación empírica es el primer paso para asegurar que la lógica del algoritmo es sólida.</p>
+
+            <h4>Pruebas de Escritorio (Desk Check) 📋</h4>
+            <p>La prueba de escritorio es el acto de 'jugar a ser la computadora'. Es una simulación manual y meticulosa en la que, armados con lápiz y papel, seguimos la ejecución del algoritmo paso a paso. El proceso implica crear una tabla para rastrear los valores de cada variable a medida que se ejecuta cada línea de código. Esta simulación de la "memoria" de la máquina es una herramienta poderosa para detectar errores lógicos, especialmente en el comportamiento de condicionales y ciclos, antes de escribir una sola línea de código.</p>
+
+            <h4>Selección de Casos de Prueba 🧪</h4>
+            <p>Una cobertura de prueba adecuada es fundamental para garantizar la robustez de un algoritmo. Las pruebas no deben limitarse a escenarios ideales, sino que deben explorar sistemáticamente los límites del problema. Un conjunto de pruebas completo debe incluir:</p>
+            
+            <ul>
+                <li><strong>Casos típicos</strong>: Entradas estándar que representan el uso normal del algoritmo.</li>
+                <li><strong>Casos Límite (Boundary Cases)</strong>: Valores que se encuentran en los extremos del dominio de entrada (por ejemplo, el primer y último elemento de una lista, o el valor cero), ya que es en estos puntos donde los errores son más probables.</li>
+                <li><strong>Casos Inválidos</strong>: Entradas que violan deliberadamente las precondiciones del algoritmo. Esto permite verificar que el sistema maneja los errores de forma robusta y no produce resultados incorrectos o estados inestables.</li>
+            </ul>
+
+            <h3>Evaluación de la Calidad y Eficiencia ⚡</h3>
+            <p>Más allá de la correctitud, un buen algoritmo debe ser eficiente. El análisis de complejidad mide cómo los recursos requeridos por un algoritmo escalan en relación con el tamaño de los datos de entrada.</p>
+
+            <h4>Análisis de Complejidad 📊</h4>
+            <p>La complejidad algorítmica es una medida de los recursos —principalmente tiempo y memoria (espacio)— que un algoritmo consume en relación con el tamaño de su entrada, comúnmente denotado como N.</p>
+            
+            <ul>
+                <li><strong>Complejidad Temporal</strong>: Mide cómo crece el tiempo de ejecución del algoritmo a medida que aumenta el tamaño de la entrada N.</li>
+                <li><strong>Complejidad Espacial</strong>: Mide cómo crece la cantidad de memoria que el algoritmo consume a medida que aumenta el tamaño de la entrada N.</li>
+            </ul>
+
+            <h4>Notación Big O 📈</h4>
+            <p>La Notación Big O es el estándar matemático utilizado para describir el comportamiento de un algoritmo en el peor de los casos. Proporciona un límite superior sobre la tasa de crecimiento de la función de tiempo o espacio, lo que permite comparar la eficiencia de diferentes algoritmos de una manera que es independiente del hardware, el lenguaje de programación o la implementación específica. Un valor de Big O más bajo generalmente indica un mejor rendimiento a gran escala.</p>
+
+            <h4>Jerarquía de Complejidad 🧮</h4>
+            <p>Los algoritmos se clasifican según su tasa de crecimiento. A continuación se presenta una jerarquía de las complejidades temporales más comunes, desde las más eficientes hasta las menos eficientes.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Notación Big O</th>
+                        <th>Nombre</th>
+                        <th>Tasa de Crecimiento</th>
+                        <th>Ejemplo de Algoritmo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>O(1)</td>
+                        <td>Constante</td>
+                        <td>El tiempo de ejecución es fijo y no depende del tamaño de la entrada (N).</td>
+                        <td>Acceder a un elemento de un arreglo por su índice.</td>
+                    </tr>
+                    <tr>
+                        <td>O(log N)</td>
+                        <td>Logarítmico</td>
+                        <td>El tiempo de ejecución crece muy lentamente a medida que N aumenta.</td>
+                        <td>Búsqueda Binaria en una lista ordenada.</td>
+                    </tr>
+                    <tr>
+                        <td>O(N)</td>
+                        <td>Lineal</td>
+                        <td>El tiempo de ejecución crece proporcionalmente al tamaño de la entrada.</td>
+                        <td>Recorrer todos los elementos de una lista.</td>
+                    </tr>
+                    <tr>
+                        <td>O(N log N)</td>
+                        <td>Logarítmico Lineal</td>
+                        <td>Crecimiento moderado, común en algoritmos eficientes de "divide y vencerás".</td>
+                        <td>Algoritmos de ordenación como Merge Sort.</td>
+                    </tr>
+                    <tr>
+                        <td>O(N²)</td>
+                        <td>Cuadrático</td>
+                        <td>El tiempo crece con el cuadrado del tamaño de la entrada. Típico de ciclos anidados.</td>
+                        <td>Algoritmos de ordenación simples como Bubble Sort.</td>
+                    </tr>
+                    <tr>
+                        <td>O(2^N)</td>
+                        <td>Exponencial</td>
+                        <td>El tiempo de ejecución se duplica con cada elemento adicional. Inviable para N grandes.</td>
+                        <td>Algoritmos de fuerza bruta para resolver ciertos problemas complejos.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Placeholder para imagen -->
+            <img src="imagenes/fundamentos-antes.png" alt="Gráfica de complejidad">
+            <p><em>Figura 5: Gráfica comparativa de las diferentes notaciones Big O.</em></p>
+
+            <p>El dominio de este ciclo completo —desde la abstracción de un problema ambiguo hasta la verificación formal de una solución eficiente— es lo que distingue la programación como una disciplina de ingeniería. Es el proceso que transforma una simple idea en una solución de software robusta, fiable y escalable, sentando las bases para toda la innovación en el campo de la computación.</p>
+
+            <!-- Quiz Tema 5 -->
+            <div class="quiz-container">
+                <h3>✅ Quiz de Repaso - Tema 5</h3>
+                <div class="question">
+                    <p><strong>1. ¿Qué mide la complejidad temporal?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 0)">
+                            <input type="radio" name="q12" value="a"> a) Cómo crece el tiempo de ejecución con el tamaño de la entrada
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 0)">
+                            <input type="radio" name="q12" value="b"> b) Cómo crece la memoria utilizada con el tamaño de la entrada
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 0)">
+                            <input type="radio" name="q12" value="c"> c) La cantidad de errores en el algoritmo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 0)">
+                            <input type="radio" name="q12" value="d"> d) La facilidad de entender el algoritmo
+                        </label>
+                    </div>
+                    <div id="feedback12" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>2. ¿Qué significa O(1) en notación Big O?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 1)">
+                            <input type="radio" name="q13" value="a"> a) Tiempo de ejecución constante, independiente del tamaño de la entrada
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 1)">
+                            <input type="radio" name="q13" value="b"> b) Tiempo de ejecución lineal
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 1)">
+                            <input type="radio" name="q13" value="c"> c) Tiempo de ejecución cuadrático
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 1)">
+                            <input type="radio" name="q13" value="d"> d) Tiempo de ejecución logarítmico
+                        </label>
+                    </div>
+                    <div id="feedback13" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>3. ¿Qué tipo de casos de prueba deben incluirse para garantizar robustez?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 2)">
+                            <input type="radio" name="q14" value="a"> a) Casos típicos, casos límite y casos inválidos
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 2)">
+                            <input type="radio" name="q14" value="b"> b) Solo casos típicos
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 2)">
+                            <input type="radio" name="q14" value="c"> c) Solo casos límite
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 2)">
+                            <input type="radio" name="q14" value="d"> d) Solo casos inválidos
+                        </label>
+                    </div>
+                    <div id="feedback14" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Examen Final -->
+        <div id="examen" class="content-section">
+            <h1>🎓 Examen Final</h1>
+            <p>Este examen evalúa tu comprensión de todos los temas del curso de Razonamiento Algorítmico. Contiene 10 preguntas de opción múltiple.</p>
+
+            <div class="quiz-container">
+                <div class="question">
+                    <p><strong>1. ¿Qué es el razonamiento algorítmico?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 15)">
+                            <input type="radio" name="q15" value="a"> a) La capacidad de abstraer y modelar un problema, aplicar deducciones lógicas y sintetizar una solución
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 15)">
+                            <input type="radio" name="q15" value="b"> b) La habilidad de escribir código rápidamente
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 15)">
+                            <input type="radio" name="q15" value="c"> c) La capacidad de resolver problemas matemáticos complejos
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 15)">
+                            <input type="radio" name="q15" value="d"> d) La habilidad de usar computadoras eficientemente
+                        </label>
+                    </div>
+                    <div id="feedback15" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>2. ¿Cuáles son las dos habilidades cognitivas clave del razonamiento algorítmico?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 16)">
+                            <input type="radio" name="q16" value="a"> a) Abstracción y descomposición
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 16)">
+                            <input type="radio" name="q16" value="b"> b) Memoria y lógica
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 16)">
+                            <input type="radio" name="q16" value="c"> c) Creatividad y análisis
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 16)">
+                            <input type="radio" name="q16" value="d"> d) Velocidad y precisión
+                        </label>
+                    </div>
+                    <div id="feedback16" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>3. ¿Cuántas etapas tiene el ciclo de vida de la resolución de problemas?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 17)">
+                            <input type="radio" name="q17" value="a"> a) 7
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 17)">
+                            <input type="radio" name="q17" value="b"> b) 5
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 17)">
+                            <input type="radio" name="q17" value="c"> c) 6
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 17)">
+                            <input type="radio" name="q17" value="d"> d) 8
+                        </label>
+                    </div>
+                    <div id="feedback17" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>4. ¿Qué significa IPO en el análisis del problema?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 18)">
+                            <input type="radio" name="q18" value="a"> a) Entrada, Proceso y Salida
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 18)">
+                            <input type="radio" name="q18" value="b"> b) Ingreso, Procedimiento y Obtención
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 18)">
+                            <input type="radio" name="q18" value="c"> c) Inicial, Procesamiento y Final
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 18)">
+                            <input type="radio" name="q18" value="d"> d) Información, Procesamiento y Organización
+                        </label>
+                    </div>
+                    <div id="feedback18" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>5. ¿Qué son las precondiciones?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 19)">
+                            <input type="radio" name="q19" value="a"> a) Condiciones que deben ser verdaderas antes de ejecutar el algoritmo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 19)">
+                            <input type="radio" name="q19" value="b"> b) Condiciones que deben ser verdaderas después de ejecutar el algoritmo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 19)">
+                            <input type="radio" name="q19" value="c"> c) Condiciones que pueden ser verdaderas o falsas
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 19)">
+                            <input type="radio" name="q19" value="d"> d) Condiciones que se verifican durante la ejecución
+                        </label>
+                    </div>
+                    <div id="feedback19" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>6. ¿Qué estrategia implica abordar el problema desde el nivel más alto y abstracto?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 20)">
+                            <input type="radio" name="q20" value="a"> a) Diseño Descendente (Top-Down)
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 20)">
+                            <input type="radio" name="q20" value="b"> b) Diseño Ascendente (Bottom-Up)
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 20)">
+                            <input type="radio" name="q20" value="c"> c) Diseño Modular
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 20)">
+                            <input type="radio" name="q20" value="d"> d) Diseño Iterativo
+                        </label>
+                    </div>
+                    <div id="feedback20" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>7. ¿Cuáles son las tres estructuras de control fundamentales?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 21)">
+                            <input type="radio" name="q21" value="a"> a) Secuencia, Selección e Iteración
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 21)">
+                            <input type="radio" name="q21" value="b"> b) Entrada, Proceso y Salida
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 21)">
+                            <input type="radio" name="q21" value="c"> c) Variables, Constantes y Funciones
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 21)">
+                            <input type="radio" name="q21" value="d"> d) Análisis, Diseño y Codificación
+                        </label>
+                    </div>
+                    <div id="feedback21" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>8. ¿Cuál es la ventaja principal del pseudocódigo?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 22)">
+                            <input type="radio" name="q22" value="a"> a) Logra un equilibrio entre legibilidad humana y rigor estructural
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 22)">
+                            <input type="radio" name="q22" value="b"> b) Es más visual que los diagramas de flujo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 22)">
+                            <input type="radio" name="q22" value="c"> c) Es más simple que el lenguaje natural
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 22)">
+                            <input type="radio" name="q22" value="d"> d) No requiere conocimientos de programación
+                        </label>
+                    </div>
+                    <div id="feedback22" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>9. ¿Qué mide la complejidad temporal?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 23)">
+                            <input type="radio" name="q23" value="a"> a) Cómo crece el tiempo de ejecución con el tamaño de la entrada
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 23)">
+                            <input type="radio" name="q23" value="b"> b) Cómo crece la memoria utilizada con el tamaño de la entrada
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 23)">
+                            <input type="radio" name="q23" value="c"> c) La cantidad de errores en el algoritmo
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 23)">
+                            <input type="radio" name="q23" value="d"> d) La facilidad de entender el algoritmo
+                        </label>
+                    </div>
+                    <div id="feedback23" class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="question">
+                    <p><strong>10. ¿Qué significa O(1) en notación Big O?</strong></p>
+                    <div class="options">
+                        <label class="option" onclick="selectOption(this, 'a', 24)">
+                            <input type="radio" name="q24" value="a"> a) Tiempo de ejecución constante, independiente del tamaño de la entrada
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'b', 24)">
+                            <input type="radio" name="q24" value="b"> b) Tiempo de ejecución lineal
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'c', 24)">
+                            <input type="radio" name="q24" value="c"> c) Tiempo de ejecución cuadrático
+                        </label>
+                        <label class="option" onclick="selectOption(this, 'd', 24)">
+                            <input type="radio" name="q24" value="d"> d) Tiempo de ejecución logarítmico
+                        </label>
+                    </div>
+                    <div id="feedback24" class="feedback" style="display: none;"></div>
+                </div>
+
+                <button onclick="calculateFinalScore()" style="background: #28A745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 20px;">Calcular Resultado</button>
+                <div id="final-result" class="quiz-result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Juego de Memoria -->
+        <div id="memoria" class="content-section">
+            <h1>🧠 Juego de Memoria</h1>
+            <p>Encuentra los pares de términos y definiciones del curso de Razonamiento Algorítmico.</p>
+
+            <div class="memory-game">
+                <div class="game-board" id="game-board">
+                    <!-- Se llenará con JavaScript -->
+                </div>
+                <button onclick="resetGame()" style="background: #FCAE1E; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 20px;">Reiniciar Juego</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 Prof. Felipe Martínez - Todos los derechos reservados
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                
+                // Hide all sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show target section
+                document.getElementById(target).classList.add('active');
+                
+                // Update active menu item
+                document.querySelectorAll('.menu-item').forEach(menuItem => {
+                    menuItem.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // Initialize first section
+        document.getElementById('tema1').classList.add('active');
+        document.querySelector('.menu-item[data-target="tema1"]').classList.add('active');
+
+        // Quiz functionality
+        function selectOption(element, correctAnswer, questionIndex) {
+            // Remove selected class from all options in this question
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Check if answer is correct
+            const isCorrect = element.querySelector('input').value === correctAnswer;
+            const feedback = document.getElementById(`feedback${questionIndex}`);
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.className = 'feedback correct';
+                feedback.textContent = '¡Correcto! ✓';
+            } else {
+                element.classList.add('incorrect');
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = 'Incorrecto ✗';
+            }
+            
+            feedback.style.display = 'block';
+            
+            // Remove selected class after 2 seconds
+            setTimeout(() => {
+                element.classList.remove('selected');
+            }, 2000);
+        }
+
+        // Final exam calculation
+        function calculateFinalScore() {
+            const answers = ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a']; // Correct answers
+            let score = 0;
+            
+            for (let i = 15; i <= 24; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedOption && selectedOption.value === answers[i-15]) {
+                    score++;
+                }
+            }
+            
+            const resultDiv = document.getElementById('final-result');
+            resultDiv.textContent = `Obtuviste ${score}/10 correctas.`;
+            resultDiv.style.display = 'block';
+        }
+
+        // Memory game functionality
+        const memoryCards = [
+            { term: "Abstracción", definition: "Capacidad de destilar un problema a su esencia" },
+            { term: "Descomposición", definition: "Estrategia de fraccionar un problema en partes más pequeñas" },
+            { term: "Algoritmo", definition: "Secuencia de pasos para resolver un problema" },
+            { term: "Pseudocódigo", definition: "Representación textual semi-formal de un algoritmo" },
+            { term: "Diagrama de Flujo", definition: "Representación gráfica de un algoritmo" },
+            { term: "IPO", definition: "Entrada, Proceso y Salida" }
+        ];
+
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let gameBoard = [];
+
+        function initializeMemoryGame() {
+            // Create pairs of cards
+            const cards = [...memoryCards, ...memoryCards];
+            gameBoard = shuffleArray(cards);
+            
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+            
+            gameBoard.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.textContent = '?';
+                cardElement.onclick = () => flipCard(index);
+                cardElement.dataset.index = index;
+                board.appendChild(cardElement);
+            });
+        }
+
+        function flipCard(index) {
+            const cardElement = document.querySelector(`.card[data-index="${index}"]`);
+            
+            // Don't allow flipping if card is already flipped or matched
+            if (flippedCards.includes(index) || cardElement.classList.contains('matched')) {
+                return;
+            }
+            
+            // Flip the card
+            cardElement.textContent = gameBoard[index].term;
+            cardElement.classList.add('flipped');
+            flippedCards.push(index);
+            
+            // Check for match when two cards are flipped
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [firstIndex, secondIndex] = flippedCards;
+            const firstCard = gameBoard[firstIndex];
+            const secondCard = gameBoard[secondIndex];
+            
+            if (firstCard.term === secondCard.definition || firstCard.definition === secondCard.term || 
+                (firstCard.term === secondCard.term && firstCard.definition === secondCard.definition)) {
+                // It's a match!
+                document.querySelectorAll('.card').forEach((card, index) => {
+                    if (index === firstIndex || index === secondIndex) {
+                        card.classList.add('matched');
+                    }
+                });
+                matchedPairs++;
+                
+                if (matchedPairs === memoryCards.length) {
+                    setTimeout(() => {
+                        alert('¡Felicidades! Has completado el juego de memoria.');
+                    }, 500);
+                }
+            } else {
+                // Not a match, flip back
+                document.querySelectorAll('.card').forEach((card, index) => {
+                    if (index === firstIndex || index === secondIndex) {
+                        setTimeout(() => {
+                            card.textContent = '?';
+                            card.classList.remove('flipped');
+                        }, 500);
+                    }
+                });
+            }
+            
+            flippedCards = [];
+        }
+
+        function resetGame() {
+            flippedCards = [];
+            matchedPairs = 0;
+            initializeMemoryGame();
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Initialize game
+        initializeMemoryGame();
+    </script>
+</body>
+</html>
+
